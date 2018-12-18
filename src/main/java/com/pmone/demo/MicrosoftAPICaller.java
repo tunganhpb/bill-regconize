@@ -2,6 +2,8 @@ package com.pmone.demo;
 
 import com.pmone.demo.calculate.BoundingBox;
 import com.pmone.demo.calculate.BoundingBoxUtils;
+import com.pmone.demo.calculate.ParseUtils;
+import com.pmone.demo.model.Bill;
 import com.pmone.demo.model.Result;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,17 +18,24 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
-import java.util.stream.Stream;
+import java.net.URISyntaxException;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class MicrosoftAPICaller {
 
-  @Test
-  public void uploadPic() {
+  private static final String imagePath = "D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1823.JPG";
+
+  public Result uploadPic(String imagePath) {
     HttpClient httpclient = HttpClients.createDefault();
 
+    URIBuilder builder;
+    Result result = null;
     try {
-      URIBuilder builder = new URIBuilder("https://northeurope.api.cognitive.microsoft.com/vision/v2.0/recognizeText");
+      builder = new URIBuilder("https://northeurope.api.cognitive.microsoft.com/vision/v2.0/recognizeText");
+
 
       builder.setParameter("mode", "Printed");
 
@@ -36,19 +45,34 @@ public class MicrosoftAPICaller {
       request.setHeader("Ocp-Apim-Subscription-Key", "81fe91d12ec8417f812c688e167683a2");
 
       // Request body
-      request.setEntity(new FileEntity(new File("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1825.JPG")));
+      request.setEntity(new FileEntity(new File(imagePath)));
 
       HttpResponse response = httpclient.execute(request);
       String operation = response.getHeaders("Operation-Location")[0].getElements()[0].getName();
       Thread.sleep(15000);
-      Result result = getResult(operation);
-      Stream<BoundingBox> boundingBoxStream = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox()));
-      double average = boundingBoxStream.mapToDouble(BoundingBoxUtils::calculateInclined).filter(value -> value != -1000.0).average().getAsDouble();
+      result = getResult(operation);
+      BoundingBox longestBouding = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).max(Comparator.comparingInt(o -> o.getText().length())).get();
+      double average = BoundingBoxUtils.calculateInclined(longestBouding);
       System.out.println("average inclined: " + average);
 
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
+      if (Math.abs(average) > 3) {
+        String path = BoundingBoxUtils.rotateImage(average, new File(imagePath));
+        return uploadPic(path);
+      }
+
+    } catch (URISyntaxException | IOException | InterruptedException e) {
+      e.printStackTrace();
     }
+
+    return result;
+  }
+
+  @Test
+  public void test() {
+    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1825.JPG");
+    Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
+    System.out.println(bill);
+    System.out.println("Done");
   }
 
   private Result getResult(String url) {
