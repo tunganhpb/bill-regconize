@@ -12,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -69,7 +70,13 @@ public class MicrosoftAPICaller {
         return uploadPic(path, supermarket);
       }
 
-    } catch (URISyntaxException | IOException | InterruptedException | JSONException e) {
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (JSONException e) {
       e.printStackTrace();
     }
 
@@ -102,7 +109,7 @@ public class MicrosoftAPICaller {
 
   @Test
   public void test() {
-    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1839.JPG", SupermarketEnum.Lidl);
+    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1838.JPG", SupermarketEnum.Lidl);
     Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
     System.out.println(bill);
     System.out.println("Done");
