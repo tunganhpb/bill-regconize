@@ -3,8 +3,9 @@ package com.pmone.demo;
 import com.pmone.demo.calculate.BoundingBox;
 import com.pmone.demo.calculate.BoundingBoxUtils;
 import com.pmone.demo.calculate.ParseUtils;
-import com.pmone.demo.model.Bill;
+import com.pmone.demo.rest.model.Bill;
 import com.pmone.demo.model.Result;
+import com.pmone.demo.rest.model.SupermarketEnum;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,6 +17,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +26,10 @@ import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Service
 public class MicrosoftAPICaller {
 
-  private static final String imagePath = "D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1823.JPG";
-
-  public Result uploadPic(String imagePath) {
+  public Result uploadPic(String imagePath, SupermarketEnum supermarket) {
     HttpClient httpclient = HttpClients.createDefault();
 
     URIBuilder builder;
@@ -56,8 +57,8 @@ public class MicrosoftAPICaller {
       System.out.println("average inclined: " + average);
 
       if (Math.abs(average) > 3) {
-        String path = BoundingBoxUtils.rotateImage(average, new File(imagePath));
-        return uploadPic(path);
+        String path = BoundingBoxUtils.rotateImageNoCrop(average, new File(imagePath));
+        return uploadPic(path, supermarket);
       }
 
     } catch (URISyntaxException | IOException | InterruptedException e) {
@@ -65,14 +66,6 @@ public class MicrosoftAPICaller {
     }
 
     return result;
-  }
-
-  @Test
-  public void test() {
-    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1825.JPG");
-    Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
-    System.out.println(bill);
-    System.out.println("Done");
   }
 
   private Result getResult(String url) {
@@ -97,6 +90,14 @@ public class MicrosoftAPICaller {
       System.out.println(e.getMessage());
     }
     return null;
+  }
+
+  @Test
+  public void test() {
+    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1839.JPG", SupermarketEnum.Lidl);
+    Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
+    System.out.println(bill);
+    System.out.println("Done");
   }
 
 

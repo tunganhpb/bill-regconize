@@ -1,12 +1,9 @@
 package com.pmone.demo.calculate;
 
-import com.pmone.demo.model.Bill;
-import com.pmone.demo.model.Item;
+import com.pmone.demo.rest.model.Bill;
+import com.pmone.demo.rest.model.Item;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ParseUtils {
 
@@ -20,18 +17,21 @@ public class ParseUtils {
     do {
       a = find(a, result);
     } while (!a.isEmpty());
-    Bill bill = gatherInfo(result);
+    Bill bill = gatherInfoLidl(result);
     return bill;
   }
 
   //LIDL
-  public static Bill gatherInfo(List<List<BoundingBox>> result) {
+  public static Bill gatherInfoLidl(List<List<BoundingBox>> result) {
     Bill bill = new Bill();
     List<Item> items = new ArrayList<>();
+    BoundingBox eur = null;
+    Item lastItem = null;
     for (int i = 0; i < result.size(); i++) {
       List<BoundingBox> bb = result.get(i);
       if (i == 0 && bb.size() == 1) {
-        bill.setSuperMarket(bb.get(0).getText());
+//        bill.setSuperMarket(bb.get(0).getText());
+//        lastItem = null;
       } else if (endOfBill(bb)) {
         if (bb.get(0).getText().equalsIgnoreCase("zu zahlen")) {
           bill.setSum(bb.get(1).getText());
@@ -40,7 +40,17 @@ public class ParseUtils {
         }
         break;
       } else if (bb.size() == 2) {
-        items.add(extractItem(bb));
+        lastItem = extractItem(bb, eur, lastItem);
+        if (lastItem != null) {
+          items.add(lastItem);
+        }
+      } else if (bb.size() == 1 && bb.get(0).getText().equals("EUR")) {
+        eur = bb.get(0);
+        lastItem = null;
+      } else if (bb.size() == 1) {
+        if (lastItem != null) {
+          lastItem.setDescription((lastItem.getDescription() == null ? "" : lastItem.getDescription() + "\n") + bb.get(0).getText());
+        }
       } else {
         bb.forEach(boundingBox -> System.out.println(boundingBox.getText()));
       }
@@ -49,18 +59,37 @@ public class ParseUtils {
     return bill;
   }
 
-  private static Item extractItem(List<BoundingBox> bb) {
-    BoundingBox b1 = bb.get(0);
-    BoundingBox b2 = bb.get(1);
-    Item item = new Item();
-    if (b1.getLeftBot().getX() < b2.getLeftBot().getX()) {
-      item.setName(b1.getText());
-      item.setPrice(b2.getText());
+  private static Item extractItem(List<BoundingBox> bb, BoundingBox eu, Item lastItem) {
+    long count = bb.stream().filter(boundingBox -> {
+      int euWidth = eu.getRightBot().getX() - eu.getLeftBot().getX();
+      int boxRightBot = boundingBox.getRightBot().getX();
+      int euRightBot = eu.getRightBot().getX();
+      return euRightBot - euWidth < boxRightBot && boxRightBot < euRightBot + euWidth;
+    }).count();
+
+    if (count != 0) {
+      BoundingBox b1 = bb.get(0);
+      BoundingBox b2 = bb.get(1);
+      Item item = new Item();
+      if (b1.getLeftBot().getX() < b2.getLeftBot().getX()) {
+        item.setName(b1.getText());
+        item.setPrice(b2.getText());
+      } else {
+        item.setName(b2.getText());
+        item.setPrice(b1.getText());
+      }
+      return item;
     } else {
-      item.setName(b2.getText());
-      item.setPrice(b1.getText());
+      bb.sort(Comparator.comparingInt(o -> o.getRightBot().getX()));
+      StringBuilder sb = new StringBuilder();
+      bb.forEach(boundingBox -> {
+        sb.append(boundingBox.getText());
+      });
+      if (lastItem != null) {
+        lastItem.setDescription(sb.toString());
+      }
     }
-    return item;
+    return null;
   }
 
   private static boolean endOfBill(List<BoundingBox> bb) {
