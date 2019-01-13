@@ -1,4 +1,4 @@
-package com.pmone.demo;
+package com.pmone.demo.rest.service;
 
 import com.pmone.demo.calculate.BoundingBox;
 import com.pmone.demo.calculate.BoundingBoxUtils;
@@ -21,16 +21,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
-public class MicrosoftAPICaller {
+public class MicrosoftAPICallerService {
 
   public Result uploadPic(String imagePath, SupermarketEnum supermarket) {
     HttpClient httpclient = HttpClients.createDefault();
@@ -45,8 +51,8 @@ public class MicrosoftAPICaller {
 
       URI uri = builder.build();
       HttpPost request = new HttpPost(uri);
-//      request.setHeader("Content-Type", "application/octet-stream");
-      request.setHeader("Content-Type", "application/json");
+      request.setHeader("Content-Type", "application/octet-stream");
+//      request.setHeader("Content-Type", "application/json");
       request.setHeader("Ocp-Apim-Subscription-Key", "81fe91d12ec8417f812c688e167683a2");
 
       // Request body
@@ -54,8 +60,8 @@ public class MicrosoftAPICaller {
       jsonObject.put("url", imagePath);
       StringEntity reqEntity = new StringEntity(jsonObject.toString());
 
-      request.setEntity(reqEntity);
-//      request.setEntity(new FileEntity(new File(imagePath)));
+//      request.setEntity(reqEntity);
+      request.setEntity(new FileEntity(new File(imagePath)));
 
       HttpResponse response = httpclient.execute(request);
       String operation = response.getHeaders("Operation-Location")[0].getElements()[0].getName();
@@ -106,14 +112,5 @@ public class MicrosoftAPICaller {
     }
     return null;
   }
-
-  @Test
-  public void test() {
-    Result result = uploadPic("D:\\Dev\\textRecognize\\src\\main\\resources\\IMG_1838.JPG", SupermarketEnum.Lidl);
-    Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
-    System.out.println(bill);
-    System.out.println("Done");
-  }
-
 
 }

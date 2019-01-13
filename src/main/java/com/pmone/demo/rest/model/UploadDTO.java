@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class UploadDTO {
   private String supermarket;
-  private String imageUrl;
+  private String imageName;
 }
