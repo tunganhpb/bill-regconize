@@ -31,7 +31,7 @@ public class FtpClientUtilsIntegrationTest {
 
   @Test
   public void givenRemoteFile_whenDownloading_thenItIsOnTheLocalFilesystem() throws IOException {
-    ftpClient.downloadFile("IMG_1838.jpg", "IMG_1838.jpg");
+    ftpClient.downloadFile("real.jpg", "real.jpg");
   }
 
   @After

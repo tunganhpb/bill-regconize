@@ -17,7 +17,7 @@ public class Word {
     private List<Integer> boundingBox = null;
     @JsonProperty("text")
     private String text;
-    @JsonProperty("Confidence")
+    @JsonProperty("confidence")
     private String confidence;
 
     @JsonProperty("boundingBox")
@@ -40,12 +40,12 @@ public class Word {
         this.text = text;
     }
 
-    @JsonProperty("Confidence")
+    @JsonProperty("confidence")
     public String getConfidence() {
         return confidence;
     }
 
-    @JsonProperty("Confidence")
+    @JsonProperty("confidence")
     public void setConfidence(String confidence) {
         this.confidence = confidence;
     }

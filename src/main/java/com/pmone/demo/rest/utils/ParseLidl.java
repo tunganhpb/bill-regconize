@@ -6,16 +6,10 @@ import com.pmone.demo.rest.model.Item;
 
 import java.util.*;
 
-public class ParseUtils {
+public class ParseLidl {
 
   public static Bill parseLines(List<BoundingBox> boundingBoxes) {
-    boundingBoxes.sort(Comparator.comparingInt(o -> (o.getRightBot().getY() + o.getLeftBot().getY())));
-    List<List<BoundingBox>> result = new ArrayList<>();
-    List<BoundingBox> a = boundingBoxes;
-    int i = 0;
-    do {
-      a = find(a, result);
-    } while (!a.isEmpty());
+    List<List<BoundingBox>> result = BoundingBoxUtils.sort(boundingBoxes);
     return gatherInfoLidl(result);
   }
 
@@ -92,36 +86,6 @@ public class ParseUtils {
 
   private static boolean endOfBill(List<BoundingBox> bb) {
     return bb.stream().anyMatch(boundingBox -> boundingBox.getText().equalsIgnoreCase("zu zahlen"));
-  }
-
-  private static List<BoundingBox> find(List<BoundingBox> boundingBoxes, List<List<BoundingBox>> result) {
-    List<BoundingBox> boxes = new ArrayList<>();
-
-    Iterator<BoundingBox> iterator = boundingBoxes.iterator();
-    BoundingBox firstBox = iterator.next();
-    List<BoundingBox> list = new ArrayList<>();
-    list.add(firstBox);
-
-    while (iterator.hasNext()) {
-      BoundingBox comparedBox = iterator.next();
-      if (compareLine(firstBox, comparedBox)) {
-        list.add(comparedBox);
-      } else {
-        boxes.add(comparedBox);
-      }
-    }
-    result.add(list);
-    return boxes;
-  }
-
-  private static boolean compareLine(BoundingBox origin, BoundingBox compared) {
-    int botOrigin = origin.getRightBot().getY();
-    int topOrigin = origin.getRightTop().getY();
-    int height = botOrigin - topOrigin;
-    int topCompared = compared.getRightTop().getY();
-    int botCompared = compared.getRightBot().getY();
-    double v = 0.70;
-    return (topOrigin - (height * v) < topCompared && topCompared < topOrigin + (height * v)) && (botOrigin - (height * v) < botCompared && botCompared < botOrigin + (height * v));
   }
 
 }
