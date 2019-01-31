@@ -60,17 +60,7 @@ public class ParseLidl {
     }).count();
 
     if (count != 0) {
-      BoundingBox b1 = bb.get(0);
-      BoundingBox b2 = bb.get(1);
-      Item item = new Item();
-      if (b1.getLeftBot().getX() < b2.getLeftBot().getX()) {
-        item.setName(b1.getText());
-        item.setPrice(b2.getText());
-      } else {
-        item.setName(b2.getText());
-        item.setPrice(b1.getText());
-      }
-      return item;
+      return BoundingBoxUtils.extractItem(bb);
     } else {
       bb.sort(Comparator.comparingInt(o -> o.getRightBot().getX()));
       StringBuilder sb = new StringBuilder();

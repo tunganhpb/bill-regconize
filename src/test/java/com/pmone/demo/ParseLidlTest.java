@@ -1,9 +1,9 @@
 package com.pmone.demo;
 
 import com.pmone.demo.calculate.BoundingBox;
-import com.pmone.demo.rest.utils.ParseLidl;
 import com.pmone.demo.model.Result;
 import com.pmone.demo.rest.model.Bill;
+import com.pmone.demo.rest.utils.ParseReal;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,6 @@ public class ParseLidlTest {
     Result result;
     result = mapper.readValue(content, Result.class);
     List<BoundingBox> boundingBoxes = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList());
-    Bill bill = ParseLidl.parseLines(boundingBoxes);
+    Bill bill = ParseReal.parseLines(boundingBoxes);
   }
 }

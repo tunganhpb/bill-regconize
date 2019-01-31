@@ -29,4 +29,9 @@ public class Item {
   @JsonBackReference
   private Bill bill;
 
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinColumn(name = "category_id")
+  @JsonBackReference
+  private Category category;
+
 }

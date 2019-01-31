@@ -1,6 +1,7 @@
 package com.pmone.demo.rest.utils;
 
 import com.pmone.demo.calculate.BoundingBox;
+import com.pmone.demo.rest.model.Item;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -139,6 +140,20 @@ public class BoundingBoxUtils {
     int botCompared = compared.getRightBot().getY();
     double v = 0.70;
     return (topOrigin - (height * v) < topCompared && topCompared < topOrigin + (height * v)) && (botOrigin - (height * v) < botCompared && botCompared < botOrigin + (height * v));
+  }
+
+  static Item extractItem(List<BoundingBox> bb) {
+    BoundingBox b1 = bb.get(0);
+    BoundingBox b2 = bb.get(1);
+    Item item = new Item();
+    if (b1.getLeftBot().getX() < b2.getLeftBot().getX()) {
+      item.setName(b1.getText());
+      item.setPrice(b2.getText());
+    } else {
+      item.setName(b2.getText());
+      item.setPrice(b1.getText());
+    }
+    return item;
   }
 
 }

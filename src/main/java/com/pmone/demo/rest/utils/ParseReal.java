@@ -21,12 +21,28 @@ public class ParseReal {
     for (int i = 0; i < result.size(); i++) {
       List<BoundingBox> bb = result.get(i);
       if (bb.size() == 2) {
-//        lastItem = extractItem(bb, eur, lastItem);
+        lastItem = extractItem(bb);
         if (lastItem != null) {
           items.add(lastItem);
         }
+      } else if (endOfBill(bb)) {
+        BoundingBox total = bb.stream().filter(boundingBox -> !boundingBox.getText().equalsIgnoreCase("SUMME")).filter(boundingBox -> !boundingBox.getText().equalsIgnoreCase("EUR")).findFirst().orElse(null);
+        if (total != null) {
+          bill.setSum(total.getText());
+        }
+        break;
       }
     }
-    return new Bill();
+    bill.setItems(items);
+    return bill;
+  }
+
+  private static Item extractItem(List<BoundingBox> bb) {
+    Item item = BoundingBoxUtils.extractItem(bb);
+    return item;
+  }
+
+  private static boolean endOfBill(List<BoundingBox> bb) {
+    return bb.stream().anyMatch(boundingBox -> boundingBox.getText().equalsIgnoreCase("SUMME"));
   }
 }
