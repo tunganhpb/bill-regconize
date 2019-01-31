@@ -1,6 +1,6 @@
 package com.pmone.demo.rest.service;
 
-import com.pmone.demo.rest.utils.FtpClient;
+import com.pmone.demo.rest.utils.FtpClientUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class FtpService {
 
   public void downloadFile(String fileName) {
-    FtpClient ftpClient = new FtpClient("94.135.235.130", 21, "ftpuser", "HTWberlin!");
+    FtpClientUtils ftpClient = new FtpClientUtils("94.135.235.130", 21, "ftpuser", "HTWberlin!");
     try {
       ftpClient.open();
       ftpClient.downloadFile(fileName, fileName);

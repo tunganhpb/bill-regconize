@@ -1,10 +1,8 @@
 package com.pmone.demo.rest.service;
 
 import com.pmone.demo.calculate.BoundingBox;
-import com.pmone.demo.calculate.BoundingBoxUtils;
-import com.pmone.demo.calculate.ParseUtils;
+import com.pmone.demo.rest.utils.BoundingBoxUtils;
 import com.pmone.demo.model.Result;
-import com.pmone.demo.rest.model.Bill;
 import com.pmone.demo.rest.model.SupermarketEnum;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,21 +17,13 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Service
 public class MicrosoftAPICallerService {

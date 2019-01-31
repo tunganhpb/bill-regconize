@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
  * Created by Anh Pham on 2019-01-11.
  * email: tunganhpb@gmail.com
  */
-public class FtpClient {
+public class FtpClientUtils {
   private String server;
   private int port;
   private String user;
   private String password;
   private FTPClient ftp;
 
-  public FtpClient(String server, int port, String user, String password) {
+  public FtpClientUtils(String server, int port, String user, String password) {
     this.server = server;
     this.port = port;
     this.user = user;

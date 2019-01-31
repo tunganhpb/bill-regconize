@@ -3,7 +3,7 @@ package com.pmone.demo.rest;
 import com.pmone.demo.rest.service.FtpService;
 import com.pmone.demo.rest.service.MicrosoftAPICallerService;
 import com.pmone.demo.calculate.BoundingBox;
-import com.pmone.demo.calculate.ParseUtils;
+import com.pmone.demo.rest.utils.ParseUtils;
 import com.pmone.demo.model.Result;
 import com.pmone.demo.rest.model.Bill;
 import com.pmone.demo.rest.model.Item;
