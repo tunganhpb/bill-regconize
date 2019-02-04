@@ -1,7 +1,6 @@
 package com.pmone.demo.rest.utils;
 
 import com.pmone.demo.calculate.BoundingBox;
-import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,6 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class BoundingBoxUtils {
 
@@ -97,5 +100,45 @@ public class BoundingBoxUtils {
     return pathname;
   }
 
+  public static List<List<BoundingBox>> sort (List<BoundingBox> boundingBoxes) {
+    boundingBoxes.sort(Comparator.comparingInt(o -> (o.getRightBot().getY() + o.getLeftBot().getY())));
+    List<List<BoundingBox>> result = new ArrayList<>();
+    List<BoundingBox> a = boundingBoxes;
+    int i = 0;
+    do {
+      a = find(a, result);
+    } while (!a.isEmpty());
+    return result;
+  }
+
+  private static List<BoundingBox> find(List<BoundingBox> boundingBoxes, List<List<BoundingBox>> result) {
+    List<BoundingBox> boxes = new ArrayList<>();
+
+    Iterator<BoundingBox> iterator = boundingBoxes.iterator();
+    BoundingBox firstBox = iterator.next();
+    List<BoundingBox> list = new ArrayList<>();
+    list.add(firstBox);
+
+    while (iterator.hasNext()) {
+      BoundingBox comparedBox = iterator.next();
+      if (compareLine(firstBox, comparedBox)) {
+        list.add(comparedBox);
+      } else {
+        boxes.add(comparedBox);
+      }
+    }
+    result.add(list);
+    return boxes;
+  }
+
+  private static boolean compareLine(BoundingBox origin, BoundingBox compared) {
+    int botOrigin = origin.getRightBot().getY();
+    int topOrigin = origin.getRightTop().getY();
+    int height = botOrigin - topOrigin;
+    int topCompared = compared.getRightTop().getY();
+    int botCompared = compared.getRightBot().getY();
+    double v = 0.70;
+    return (topOrigin - (height * v) < topCompared && topCompared < topOrigin + (height * v)) && (botOrigin - (height * v) < botCompared && botCompared < botOrigin + (height * v));
+  }
 
 }

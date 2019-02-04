@@ -3,7 +3,7 @@ package com.pmone.demo.rest;
 import com.pmone.demo.rest.service.FtpService;
 import com.pmone.demo.rest.service.MicrosoftAPICallerService;
 import com.pmone.demo.calculate.BoundingBox;
-import com.pmone.demo.rest.utils.ParseUtils;
+import com.pmone.demo.rest.utils.ParseLidl;
 import com.pmone.demo.model.Result;
 import com.pmone.demo.rest.model.Bill;
 import com.pmone.demo.rest.model.Item;
@@ -44,9 +44,9 @@ public class RestAPIController {
 
   @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<?> upload(@RequestBody UploadDTO uploadDTO) {
-    ftpService.downloadFile(uploadDTO.getImageName());
-    Result result = microsoftAPICallerService.uploadPic("download/" + uploadDTO.getImageName(), SupermarketEnum.valueOf(uploadDTO.getSupermarket()));
-    Bill bill = ParseUtils.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
+//    ftpService.downloadFile(uploadDTO.getImageName());
+    Result result = microsoftAPICallerService.uploadPic("C:/ftp/ftproot/" + uploadDTO.getImageName(), SupermarketEnum.valueOf(uploadDTO.getSupermarket()));
+    Bill bill = ParseLidl.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
     bill.setSuperMarket(uploadDTO.getSupermarket());
     bill.setCreatedTime(new Date());
     List<Item> items = bill.getItems();
@@ -55,6 +55,12 @@ public class RestAPIController {
     itemRepository.saveAll(items);
     logger.info("item size: " + bill.getItems().size());
     return new ResponseEntity<>(bill, HttpStatus.CREATED);
+  }
+
+  @RequestMapping(value = "/bills", method = RequestMethod.GET)
+  public ResponseEntity<?> bills () {
+    List<Bill> all = billRepository.findAll();
+    return new ResponseEntity<>(all, HttpStatus.OK);
   }
 }
 
