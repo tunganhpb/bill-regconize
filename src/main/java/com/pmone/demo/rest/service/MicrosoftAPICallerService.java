@@ -34,7 +34,7 @@ public class MicrosoftAPICallerService {
     URIBuilder builder;
     Result result = null;
     try {
-      builder = new URIBuilder("https://northeurope.api.cognitive.microsoft.com/vision/v2.0/recognizeText");
+      builder = new URIBuilder("https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/recognizeText");
 
 
       builder.setParameter("mode", "Printed");
@@ -43,7 +43,7 @@ public class MicrosoftAPICallerService {
       HttpPost request = new HttpPost(uri);
       request.setHeader("Content-Type", "application/octet-stream");
 //      request.setHeader("Content-Type", "application/json");
-      request.setHeader("Ocp-Apim-Subscription-Key", "81fe91d12ec8417f812c688e167683a2");
+      request.setHeader("Ocp-Apim-Subscription-Key", "2d02bc722fa64a86bf99e893d8477656");
 
       // Request body
       JSONObject jsonObject = new JSONObject();
@@ -57,14 +57,14 @@ public class MicrosoftAPICallerService {
       String operation = response.getHeaders("Operation-Location")[0].getElements()[0].getName();
       Thread.sleep(15000);
       result = getResult(operation);
-      BoundingBox longestBouding = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).max(Comparator.comparingInt(o -> o.getText().length())).get();
-      double average = BoundingBoxUtils.calculateInclined(longestBouding);
-      System.out.println("average inclined: " + average);
+//      BoundingBox longestBouding = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).max(Comparator.comparingInt(o -> o.getText().length())).get();
+//      double average = BoundingBoxUtils.calculateInclined(longestBouding);
+//      System.out.println("average inclined: " + average);
 
-      if (Math.abs(average) > 3) {
-        String path = BoundingBoxUtils.rotateImageNoCrop(average, new File(imagePath));
-        return uploadPic(path, supermarket);
-      }
+//      if (Math.abs(average) > 3) {
+//        String path = BoundingBoxUtils.rotateImageNoCrop(average, new File(imagePath));
+//        return uploadPic(path, supermarket);
+//      }
 
     } catch (URISyntaxException e) {
       e.printStackTrace();
@@ -87,7 +87,7 @@ public class MicrosoftAPICallerService {
 
       URI uri = builder.build();
       HttpGet request = new HttpGet(uri);
-      request.setHeader("Ocp-Apim-Subscription-Key", "81fe91d12ec8417f812c688e167683a2");
+      request.setHeader("Ocp-Apim-Subscription-Key", "2d02bc722fa64a86bf99e893d8477656");
 
       HttpResponse response = httpclient.execute(request);
       HttpEntity entity = response.getEntity();
