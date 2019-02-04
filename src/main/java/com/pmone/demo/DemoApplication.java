@@ -26,7 +26,7 @@ public class DemoApplication {
   @Bean
   public CommandLineRunner demo(CategoryRepository categoryRepository, CategorySampleRepository categorySampleRepository) {
     return (args) -> {
-      List<File> jsonFiles = getJsonFiles("D:\\Dev\\textRecognize\\src\\main\\resources\\category");
+      List<File> jsonFiles = getJsonFiles("C:\\Users\\Administrator\\workspace\\bill-regconize\\src\\main\\resources\\category");
       JSONParser jsonParser = new JSONParser();
       for (File file : jsonFiles) {
         Category category = new Category();
