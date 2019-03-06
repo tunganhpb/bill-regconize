@@ -5,7 +5,8 @@ import lombok.Getter;
 public enum SupermarketEnum {
 
   Lidl("Lidl"),
-  Netto("Netto");
+  Netto("Netto"),
+  Real("Real");
 
   @Getter
   private String name;
