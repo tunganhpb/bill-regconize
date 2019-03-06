@@ -1,7 +1,5 @@
 package com.pmone.demo.rest.service;
 
-import com.pmone.demo.calculate.BoundingBox;
-import com.pmone.demo.rest.utils.BoundingBoxUtils;
 import com.pmone.demo.model.Result;
 import com.pmone.demo.rest.model.SupermarketEnum;
 import org.apache.http.HttpEntity;
@@ -23,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Comparator;
 
 @Service
 public class MicrosoftAPICallerService {
@@ -43,7 +40,7 @@ public class MicrosoftAPICallerService {
       HttpPost request = new HttpPost(uri);
       request.setHeader("Content-Type", "application/octet-stream");
 //      request.setHeader("Content-Type", "application/json");
-      request.setHeader("Ocp-Apim-Subscription-Key", "2d02bc722fa64a86bf99e893d8477656");
+      request.setHeader("Ocp-Apim-Subscription-Key", "8df6e12a33f64916aa9d64260ce8507b");
 
       // Request body
       JSONObject jsonObject = new JSONObject();
@@ -87,7 +84,7 @@ public class MicrosoftAPICallerService {
 
       URI uri = builder.build();
       HttpGet request = new HttpGet(uri);
-      request.setHeader("Ocp-Apim-Subscription-Key", "2d02bc722fa64a86bf99e893d8477656");
+      request.setHeader("Ocp-Apim-Subscription-Key", "8df6e12a33f64916aa9d64260ce8507b");
 
       HttpResponse response = httpclient.execute(request);
       HttpEntity entity = response.getEntity();
