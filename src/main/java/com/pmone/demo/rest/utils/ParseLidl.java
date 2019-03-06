@@ -26,9 +26,9 @@ public class ParseLidl {
 //        lastItem = null;
       } else if (endOfBill(bb)) {
         if (bb.get(0).getText().equalsIgnoreCase("zu zahlen")) {
-          bill.setSum(bb.get(1).getText());
+          bill.setSum(Integer.valueOf(bb.get(1).getText()));
         } else {
-          bill.setSum(bb.get(0).getText());
+          bill.setSum(Integer.valueOf(bb.get(0).getText()));
         }
         break;
       } else if (bb.size() == 2) {

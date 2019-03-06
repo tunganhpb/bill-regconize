@@ -21,7 +21,7 @@ public class Bill {
   private String superMarket;
 
   @Column(name = "sum")
-  private String sum;
+  private Integer sum;
 
   @Column
   private Date createdTime;
