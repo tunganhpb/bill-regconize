@@ -2,11 +2,10 @@ package com.pmone.demo.rest;
 
 import com.pmone.demo.calculate.BoundingBox;
 import com.pmone.demo.model.Result;
-import com.pmone.demo.rest.model.Bill;
-import com.pmone.demo.rest.model.Item;
-import com.pmone.demo.rest.model.SupermarketEnum;
-import com.pmone.demo.rest.model.UploadDTO;
+import com.pmone.demo.rest.model.*;
 import com.pmone.demo.rest.repository.BillRepository;
+import com.pmone.demo.rest.repository.CategoryRepository;
+import com.pmone.demo.rest.repository.CategorySampleRepository;
 import com.pmone.demo.rest.repository.ItemRepository;
 import com.pmone.demo.rest.service.MicrosoftAPICallerService;
 import com.pmone.demo.rest.utils.ParseLidl;
@@ -34,12 +33,16 @@ public class RestAPIController {
 
   private final BillRepository billRepository;
   private final ItemRepository itemRepository;
+  private final CategorySampleRepository categorySampleRepository;
+  private final CategoryRepository categoryRepository;
   private final MicrosoftAPICallerService microsoftAPICallerService;
 
   @Autowired
-  public RestAPIController(BillRepository billRepository, ItemRepository itemRepository, MicrosoftAPICallerService microsoftAPICallerService) {
+  public RestAPIController(BillRepository billRepository, ItemRepository itemRepository, CategorySampleRepository categorySampleRepository, CategoryRepository categoryRepository, MicrosoftAPICallerService microsoftAPICallerService) {
     this.billRepository = billRepository;
     this.itemRepository = itemRepository;
+    this.categorySampleRepository = categorySampleRepository;
+    this.categoryRepository = categoryRepository;
     this.microsoftAPICallerService = microsoftAPICallerService;
   }
 
@@ -61,7 +64,17 @@ public class RestAPIController {
     List<Item> items = bill.getItems();
     billRepository.save(bill);
     Bill finalBill = bill;
-    items.forEach(item -> item.setBill(finalBill));
+    items.forEach(item -> {
+      item.setBill(finalBill);
+      Category category;
+      List<CategorySample> categorySample = categorySampleRepository.findByPlaceContaining(item.getName());
+      if (categorySample.isEmpty()) {
+        category = categoryRepository.findById(25L).get();
+      } else {
+        category = categorySample.get(0).getCategorySample();
+      }
+      item.setCategory(category);
+    });
     itemRepository.saveAll(items);
     logger.info("item size: " + bill.getItems().size());
     return new ResponseEntity<>(bill, HttpStatus.CREATED);
