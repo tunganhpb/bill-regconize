@@ -5,6 +5,7 @@ import com.pmone.demo.model.Result;
 import com.pmone.demo.rest.model.Bill;
 import com.pmone.demo.rest.utils.ParseReal;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,5 +23,27 @@ public class ParseLidlTest {
     result = mapper.readValue(content, Result.class);
     List<BoundingBox> boundingBoxes = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList());
     Bill bill = ParseReal.parseLines(boundingBoxes);
+  }
+
+  @Test
+  public void test1() {
+    String a = "42,5";
+    String b = "4 2 , 5";
+    String c = "42, 5 ";
+
+    Double r = 42.5;
+
+    Assert.assertEquals(par(a), r);
+    Assert.assertEquals(par(b), r);
+    Assert.assertEquals(par(c), r);
+  }
+
+  private Double par(String a) {
+    String[] split = a.split(",");
+    Double d = Double.valueOf(split[0].replaceAll(" ", ""));
+
+    Double e = Double.valueOf("0." + split[1].replaceAll(" ", ""));
+
+    return d + e;
   }
 }

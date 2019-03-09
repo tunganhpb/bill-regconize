@@ -25,10 +25,10 @@ public class ParseLidl {
 //        bill.setSuperMarket(bb.get(0).getText());
 //        lastItem = null;
       } else if (endOfBill(bb)) {
-        if (bb.get(0).getText().equalsIgnoreCase("zu zahlen")) {
-          bill.setSum(Double.valueOf(bb.get(1).getText()));
+        if (bb.get(0).getText().replaceAll(" ", "").equalsIgnoreCase("zuzahlen")) {
+          bill.setSum(StringUtils.par(bb.get(1).getText()));
         } else {
-          bill.setSum(Double.valueOf(bb.get(0).getText()));
+          bill.setSum(StringUtils.par(bb.get(0).getText()));
         }
         break;
       } else if (bb.size() == 2) {
@@ -75,7 +75,7 @@ public class ParseLidl {
   }
 
   private static boolean endOfBill(List<BoundingBox> bb) {
-    return bb.stream().anyMatch(boundingBox -> boundingBox.getText().equalsIgnoreCase("zu zahlen"));
+    return bb.stream().anyMatch(boundingBox -> boundingBox.getText().replaceAll(" ", "").equalsIgnoreCase("zuzahlen"));
   }
 
 }
