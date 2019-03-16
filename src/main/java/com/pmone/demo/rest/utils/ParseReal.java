@@ -28,7 +28,7 @@ public class ParseReal {
       } else if (endOfBill(bb)) {
         BoundingBox total = bb.stream().filter(boundingBox -> !boundingBox.getText().equalsIgnoreCase("SUMME")).filter(boundingBox -> !boundingBox.getText().equalsIgnoreCase("EUR")).findFirst().orElse(null);
         if (total != null) {
-          bill.setSum(Double.valueOf(total.getText()));
+          bill.setSum(StringUtils.par(total.getText()));
         }
         break;
       }
