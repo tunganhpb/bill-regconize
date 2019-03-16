@@ -40,7 +40,7 @@ public class MicrosoftAPICallerService {
       HttpPost request = new HttpPost(uri);
       request.setHeader("Content-Type", "application/octet-stream");
 //      request.setHeader("Content-Type", "application/json");
-      request.setHeader("Ocp-Apim-Subscription-Key", "8df6e12a33f64916aa9d64260ce8507b");
+      request.setHeader("Ocp-Apim-Subscription-Key", "7e19abd3e90b4bdd83da805d763a2534");
 
       // Request body
       JSONObject jsonObject = new JSONObject();
@@ -84,7 +84,7 @@ public class MicrosoftAPICallerService {
 
       URI uri = builder.build();
       HttpGet request = new HttpGet(uri);
-      request.setHeader("Ocp-Apim-Subscription-Key", "8df6e12a33f64916aa9d64260ce8507b");
+      request.setHeader("Ocp-Apim-Subscription-Key", "7e19abd3e90b4bdd83da805d763a2534");
 
       HttpResponse response = httpclient.execute(request);
       HttpEntity entity = response.getEntity();

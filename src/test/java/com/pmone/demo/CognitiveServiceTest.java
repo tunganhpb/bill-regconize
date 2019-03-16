@@ -22,7 +22,7 @@ public class CognitiveServiceTest {
   public void test() {
     MicrosoftAPICallerService microsoftAPICallerService = new MicrosoftAPICallerService();
 //    Result result = microsoftAPICallerService.uploadPic("download/IMG_1838.JPG", SupermarketEnum.Lidl);
-    Result result = microsoftAPICallerService.uploadPic("/Users/tunganhpb/Dev/bill-regconize/download/Montag2.jpg", SupermarketEnum.Lidl);
+    Result result = microsoftAPICallerService.uploadPic("/Users/tunganhpb/Dev/bill-regconize/src/main/resources/IMG_1838.JPG", SupermarketEnum.Lidl);
 //    Result result = microsoftAPICallerService.uploadPic("/Users/tunganhpb/Dev/bill-regconize/src/main/resources/IMG_1825.JPG", SupermarketEnum.Lidl);
     Bill bill = ParseLidl.parseLines(result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList()));
     System.out.println(bill);

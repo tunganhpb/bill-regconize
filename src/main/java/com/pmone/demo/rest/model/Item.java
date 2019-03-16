@@ -24,12 +24,12 @@ public class Item {
   @Column
   private String price;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
   @JoinColumn(name = "bill_id")
   @JsonBackReference
   private Bill bill;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
   @JoinColumn(name = "category_id")
   @JsonBackReference
   private Category category;
