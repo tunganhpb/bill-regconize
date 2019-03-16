@@ -48,7 +48,7 @@ public class RestAPIController {
 
   @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<?> upload(@RequestBody UploadDTO uploadDTO) {
-    Result result = microsoftAPICallerService.uploadPic("C:/ftp/ftproot/" + uploadDTO.getImageName(), SupermarketEnum.valueOf(uploadDTO.getSupermarket()));
+    Result result = microsoftAPICallerService.uploadPic("C:/ftp/" + uploadDTO.getImageName(), SupermarketEnum.valueOf(uploadDTO.getSupermarket()));
     List<BoundingBox> collect = result.getRecognitionResult().getLines().stream().map(line -> new BoundingBox(line.getBoundingBox(), line.getText())).collect(Collectors.toList());
     Bill bill = new Bill();
     switch (uploadDTO.getSupermarket()) {
