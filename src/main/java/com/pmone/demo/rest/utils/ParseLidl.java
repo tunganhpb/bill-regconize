@@ -36,7 +36,7 @@ public class ParseLidl {
         if (lastItem != null) {
           items.add(lastItem);
         }
-      } else if (bb.size() == 1 && bb.get(0).getText().equals("EUR")) {
+      } else if (bb.size() == 1 && bb.get(0).getText().replaceAll(" ", "").equalsIgnoreCase("EUR")) {
         eur = bb.get(0);
         lastItem = null;
       } else if (bb.size() == 1) {
